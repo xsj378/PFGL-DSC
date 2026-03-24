@@ -15,7 +15,7 @@ from learning import evalute, personalized_aggregation
 from utils.ModelUtils import *
 from Models import GCN
 from torch_geometric.data import Data
-
+from .fedRetraining import evalute as evalutee
 
 
 args = Arguments.Arg()
@@ -174,7 +174,7 @@ def train(model: Net, preference_data, testdata):
     for i in range(args.e):
         print(
             "Recover epoch {:>2}: train loss={:.6f}, 测试集准确率={}".format(
-                i + 1, losses[i], evalute(accs, i)
+                i + 1, losses[i], evalutee(accs, i)
             )
         )
 

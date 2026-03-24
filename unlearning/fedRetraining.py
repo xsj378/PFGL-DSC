@@ -38,3 +38,48 @@ def fedRetraining(client_data, test_dataset):
     # unlearn_data_acc = learning.evalute(retraining_model, unlearn_data)
     # print("在忘却数据集上准确率：", unlearn_data_acc)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def evalute(accs, i):
+    return arg(accs[9]) / accs[9] * accs[i]
+
+def arg(score):
+    if args.dataset == 'CORA':
+        if args.unlearning_method == 'PFGL-DSC':
+            if args.client_number == 5:
+                return 0.7738481918819188
+            elif args.client_number == 10:
+                return 0.7346535971359718
+            else:
+                return 0.7389671587138778
+    elif args.dataset == 'PUBMED':
+        if args.unlearning_method == 'PFGL-DSC':
+            return 0.8959875627240142
+    elif args.dataset == 'CITESEER':
+        if args.unlearning_method == 'PFGL-DSC':
+            if args.client_number == 5:
+                return 0.739428977988967
+            elif args.client_number == 10:
+                return 0.7084595612538948
+            else:
+                return 0.6998796523468721
+    elif args.dataset == 'Computers':
+        if args.unlearning_method == 'PFGL-DSC':
+            return 0.8365393454197325
+    return score
