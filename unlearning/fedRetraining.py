@@ -1,0 +1,40 @@
+import torch
+
+import learning
+from Models.GCN import Net
+from data import datapro
+from utils import Arguments
+import torch.nn.functional as F
+
+args = Arguments.Arg()
+retraining_model = Net()
+
+
+def fedRetraining(client_data, test_dataset):
+    unlearn_ratio = 0.2
+    optim = torch.optim.Adam(retraining_model.parameters(), lr=args.lr)
+    uli = args.ulclient_index
+    data_len = int(len(client_data[uli].y) * (1 - unlearn_ratio - 0.1))
+    # 创建一个布尔tensor，前20%是True，其他是False
+    train_index = torch.cat(
+        (torch.zeros(len(client_data[uli].y) - data_len, dtype=torch.bool), torch.ones(data_len, dtype=torch.bool)))
+    unlearn_index = ~train_index
+    train_data = datapro.datasetOrderedCut(train_index, client_data[uli])
+    unlearn_data = datapro.datasetOrderedCut(unlearn_index, client_data[uli])
+
+    for epoch in range(200):  # 局部训练次数
+        retraining_model.train()
+        optim.zero_grad()
+        out = retraining_model(train_data)
+        label = train_data.y
+        loss = F.nll_loss(out, label)
+        loss.backward()
+        optim.step()
+        print("There is epoch:{} loss:{:.6f}".format(epoch, loss))
+
+    retraining_model_acc = learning.evalute(retraining_model, test_dataset)
+    print("忘却后的模型准确率：", retraining_model_acc)
+
+    # unlearn_data_acc = learning.evalute(retraining_model, unlearn_data)
+    # print("在忘却数据集上准确率：", unlearn_data_acc)
+
