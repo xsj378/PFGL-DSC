@@ -4,3 +4,11 @@ __pycache__/
 .venv/
 venv/
 .env
+
+# 模型权重、检查点与训练输出（不纳入版本库）
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.safetensors
+save/
