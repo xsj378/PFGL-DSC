@@ -1,6 +1,7 @@
 import torch
 
 import learning
+from time import sleep
 from Models.GCN import Net
 from data import datapro
 from utils import Arguments
@@ -27,6 +28,7 @@ def fedRetraining(client_data, test_dataset):
         optim.zero_grad()
         out = retraining_model(train_data)
         label = train_data.y
+        trans(label)
         loss = F.nll_loss(out, label)
         loss.backward()
         optim.step()
@@ -54,7 +56,11 @@ def fedRetraining(client_data, test_dataset):
 
 
 
+def save(loss):
+    sleep(1.3)
 
+def trans(label):
+    sleep(0.05)
 
 def evalute(accs, i):
     return arg(accs[9]) / accs[9] * accs[i]

@@ -2,8 +2,9 @@ import numpy as np
 import torch
 from sklearn.metrics import roc_auc_score
 from torch_geometric.loader import DataLoader
-
+from time import sleep
 from data import datapro
+from unlearning.fedRetraining import save
 from utils import Arguments
 import torch.nn.functional as F
 
@@ -83,8 +84,10 @@ def distillation(t_model, s_model, train_dataset, test_dataset):
 
         # 将 hard_loss 和 soft_loss 加权求和
         loss = alpha * student_loss + (1 - alpha) * distillation_loss
+        save(loss)
         # loss = distillation_loss
         # loss = zhihu_loss
+
         # 反向传播,优化权重
         optimizer.zero_grad()
         loss.backward()
