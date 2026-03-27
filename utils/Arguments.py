@@ -1,3 +1,9 @@
+from pathlib import Path
+
+# 项目根目录下的 save（相对本文件 utils/Arguments.py 为 ../save）
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+
 class Arguments:
     def __init__(self):
         self.batch_size = 64
@@ -12,7 +18,7 @@ class Arguments:
         self.log_interval = 1
         self.save_model = True
         self.client_number = 20
-        self.save_path = r"C:/Users/xsj/Desktop/two/GFU/save"
+        self.save_path = str(_PROJECT_ROOT / "save")
         self.unl_batch_size = 1024
         self.unl_epochs = 5
         self.a = 0.8  # 衰减率

@@ -85,21 +85,21 @@ if __name__ == '__main__':
     print("----------2.分发数据阶段----------")
     client_data = distribute_data(client_number, train_dataset, dataset_ratio, Var)
 
-    # print("----------2.联邦学习阶段----------")
-    # n = 1 / args.client_number
-    # model_list = [model.copy() for _ in range(args.client_number)]
-    # global_model = model.copy()
-    # for i in range(epoch):
-    #     print("----------epoch={}----------".format(i + 1))
-    #     model_list, global_model = learning.federated_learning(client_number, model_list, global_model, client_data, test_dataset, Var)
-    #     save_data(Var)
-    #
-    # acc = learning.evalute(global_model, test_dataset)
-    # print("基于测试集的模型准确率：{}".format(acc))
-    #
-    # print("----------3.模型保存----------")
-    # modelUtils.save_model("output-0.17.pt", global_model)
-    # dataUtils.save_var("var-0.17", Var)
+    print("----------2.联邦学习阶段----------")
+    n = 1 / args.client_number
+    model_list = [model.copy() for _ in range(args.client_number)]
+    global_model = model.copy()
+    for i in range(epoch):
+        print("----------epoch={}----------".format(i + 1))
+        model_list, global_model = learning.federated_learning(client_number, model_list, global_model, client_data, test_dataset, Var)
+        save_data(Var)
+
+    acc = learning.evalute(global_model, test_dataset)
+    print("基于测试集的模型准确率：{}".format(acc))
+
+    print("----------3.模型保存----------")
+    modelUtils.save_model("output-0.17.pt", global_model)
+    dataUtils.save_var("var-0.17", Var)
 
     # print("----------4.影响计算----------")
     # model = modelUtils.load_model("output-0.17.pt",global_model)
