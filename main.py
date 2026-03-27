@@ -109,42 +109,43 @@ if __name__ == '__main__':
     # impact = ca_impact(Var)
     # print(impact)
 
-    print("----------5.忘却学习阶段----------")
-    global_model = modelUtils.load_model("output-0.17.pt", model)
-    Var = dataUtils.load_var("var-0.17")
-    test_acc = learning.evalute(global_model, test_dataset)
-    print("基于测试集的模型准确率: ", test_acc)
+    if (args.aggregation_method == 'PFGL-DSC'):
+        print("----------5.忘却学习阶段----------")
+        global_model = modelUtils.load_model("output-0.17.pt", model)
+        Var = dataUtils.load_var("var-0.17")
+        test_acc = learning.evalute(global_model, test_dataset)
+        print("基于测试集的模型准确率: ", test_acc)
 
-    # 开始计时
-    start_time = time.time()
+        # 开始计时
+        start_time = time.time()
 
-    # PFGL-DSC
-    if(args.unlearning_method=='PFGL-DSC'):
-        global_model = federated_unlearning(global_model, Var.get_var("client_model")[-1][:], client_data, test_dataset)
+        # PFGL-DSC
+        if(args.unlearning_method=='PFGL-DSC'):
+            global_model = federated_unlearning(global_model, Var.get_var("client_model")[-1][:], client_data, test_dataset)
 
-    # FedRetraining
-    if (args.unlearning_method == 'FedRetraining'):
-        retraining_model = fedRetraining.fedRetraining(client_data, test_dataset)
+        # FedRetraining
+        if (args.unlearning_method == 'FedRetraining'):
+            retraining_model = fedRetraining.fedRetraining(client_data, test_dataset)
 
-    # KD
-    if (args.unlearning_method == 'KD'):
-        target_history = []
-        target_number = 1
-        client_model = Var.get_var("client_model")
-        for i in range(epoch):
-            history_con = []
-            for j in range(client_number):
-                modeltmp = Net()
-                modeltmp.load_state_dict(client_model[i][j])
-                history_con.append(modeltmp)
-            target_history.append(history_con)
-        global_model = kd.k_d(global_model, target_history, client_data, test_dataset, sum(Var.get_var("data_number")), target_number)
+        # KD
+        if (args.unlearning_method == 'KD'):
+            target_history = []
+            target_number = 1
+            client_model = Var.get_var("client_model")
+            for i in range(epoch):
+                history_con = []
+                for j in range(client_number):
+                    modeltmp = Net()
+                    modeltmp.load_state_dict(client_model[i][j])
+                    history_con.append(modeltmp)
+                target_history.append(history_con)
+            global_model = kd.k_d(global_model, target_history, client_data, test_dataset, sum(Var.get_var("data_number")), target_number)
 
-    # 结束计时
-    end_time = time.time()
-    # 计算操作耗时
-    elapsed_time = end_time - start_time
-    # print("算法耗时：", elapsed_time)
+        # 结束计时
+        end_time = time.time()
+        # 计算操作耗时
+        elapsed_time = end_time - start_time
+        # print("算法耗时：", elapsed_time)
 
 
     # # 算法2 识别低质量的数据，梯度上升训练法
